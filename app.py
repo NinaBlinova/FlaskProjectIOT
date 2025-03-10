@@ -28,6 +28,17 @@ def main():
     robot.get_status()
     robot.include_in_system()
     robot.get_coordinates()
+    rob_meh = models.MechanicalRobor("Example Mechanical Robot")
+    logger.info("Mechanical robot initialized.")
+    rob_meh.set_status(1)
+    rob_meh.get_status()
+    rob_meh.include_in_system()
+    vac_rob = models.VacuumRobor("Example Vacuum Robor")
+    logger.info("Vacuum robot initialized.")
+    vac_rob.set_status(1)
+    vac_rob.get_status()
+    vac_rob.include_in_system()
+
     return "Devices initialized and logged."
 
 
