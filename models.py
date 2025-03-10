@@ -22,9 +22,11 @@ class Thing(ABC):
 class Robot(Thing):
     def __init__(self, name):
         super().__init__(name)
+        # Параметры для мониторинга (от оборудования)
         self.lastCommand = 0
         self.status = 0
         self.count = 0
+        # Параметры для управления (на оборудование)
         self.coordX = 0
         self.coordY = 0
         self.temperature = 0
@@ -73,6 +75,34 @@ class Robot(Thing):
     def set_coordY(self, coordY):
         self.coordY = coordY
         logger.info(f"Robot coordY set to: {self.coordY}")
+
+    def startCommand(self):
+        logger.info(f"Robot start command: {self.commandNumber}")
+
+
+class MechanicalRobor(Robot):
+    def __init__(self, name):
+        super().__init__(name)
+        self.angle = 0
+        self.grab = 0
+
+    def set_angle(self, angle):
+        self.angle = angle
+        logger.info(f"Robot angle set to: {self.angle}")
+
+    def set_grab(self, grab):
+        self.grab = grab
+        logger.info(f"Robot grab set to: {self.grab}")
+
+
+class VacuumRobor(Robot):
+    def __init__(self, name):
+        super().__init__(name)
+        self.vacuum_capture = 0
+
+    def set_vacuum_capture(self, vacuum_capture):
+        self.vacuum_capture = vacuum_capture
+        logger.info(f"Robot grab set to: {self.vacuum_capture}")
 
 
 class Sensor(Thing):
