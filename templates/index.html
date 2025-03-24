@@ -2,9 +2,139 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>IoT Интерфейс</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Device Monitoring</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+        }
+        .device-container {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
+
+    <h1>Device Monitoring</h1>
+
+    <div class="device-container">
+        <h2>Sensor: {{ sensor_name }}</h2>
+        <div id="sensor-data">Loading...</div>
+    </div>
+
+    <div class="device-container">
+        <h2>Lamp: {{ lamp_name }}</h2>
+        <div id="lamp-data">Loading...</div>
+    </div>
+
+    <div class="device-container">
+        <h2>Robot: {{ robot_name }}</h2>
+        <div id="robot-data">Loading...</div>
+    </div>
+
+    <div class="device-container">
+        <h2>Mechanical Robot: {{ mech_robot_name }}</h2>
+        <div id="mech-robot-data">Loading...</div>
+    </div>
+
+    <div class="device-container">
+        <h2>Vacuum Robot: {{ vacuum_robot_name }}</h2>
+        <div id="vacuum-robot-data">Loading...</div>
+    </div>
+
+    <script>
+        function updateSensorData() {
+            $.ajax({
+                url: '/get_sensor_data',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    $('#sensor-data').html('Temperature: ' + data.value.toFixed(2));
+                },
+                error: function(error) {
+                    console.log('Error fetching sensor data:', error);
+                    $('#sensor-data').html('Error.');
+                }
+            });
+        }
+
+        function updateLampData() {
+            $.ajax({
+                url: '/get_lamp_data',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    $('#lamp-data').html('Color: ' + data.color);
+                },
+                error: function(error) {
+                    console.log('Error fetching lamp data:', error);
+                    $('#lamp-data').html('Error.');
+                }
+            });
+        }
+
+        function updateRobotData() {
+            $.ajax({
+                url: '/get_robot_data',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    $('#robot-data').html('Status: ' + data.status + ', X: ' + data.coordX + ', Y: ' + data.coordY);
+                },
+                error: function(error) {
+                    console.log('Error fetching robot data:', error);
+                    $('#robot-data').html('Error.');
+                }
+            });
+        }
+
+        function updateMechRobotData() {
+            $.ajax({
+                url: '/get_mech_robot_data',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    $('#mech-robot-data').html('Angle: ' + data.angle + ', Grab: ' + data.grab);
+                },
+                error: function(error) {
+                    console.log('Error fetching mechanical robot data:', error);
+                    $('#mech-robot-data').html('Error.');
+                }
+            });
+        }
+
+        function updateVacuumRobotData() {
+            $.ajax({
+                url: '/get_vacuum_robot_data',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    $('#vacuum-robot-data').html('Vacuum Capture: ' + data.vacuum_capture + ', Temperature: ' + data.temperature.toFixed(2));
+                },
+                error: function(error) {
+                    console.log('Error fetching vacuum robot data:', error);
+                    $('#vacuum-robot-data').html('Error.');
+                }
+            });
+        }
+
+        // Initial data load and periodic updates
+        updateSensorData();
+        updateLampData();
+        updateRobotData();
+        updateMechRobotData();
+        updateVacuumRobotData();
+
+        setInterval(updateSensorData, 5000);
+        setInterval(updateLampData, 5000);
+        setInterval(updateRobotData, 5000);
+        setInterval(updateMechRobotData, 5000);
+        setInterval(updateVacuumRobotData, 5000);
+    </script>
 
 </body>
 </html>

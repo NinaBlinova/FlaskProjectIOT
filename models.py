@@ -1,4 +1,5 @@
 import logging
+import random
 from abc import ABC, abstractmethod
 
 # Настраиваем логирование
@@ -17,6 +18,10 @@ class Thing(ABC):
     @abstractmethod
     def get_status(self):
         pass
+
+    def is_in_system(self):
+        """Проверяет, включена ли вещь в систему."""
+        return self.in_system
 
 
 class Robot(Thing):
@@ -79,6 +84,24 @@ class Robot(Thing):
     def startCommand(self):
         logger.info(f"Robot start command: {self.commandNumber}")
 
+    def emulate_data(self):
+        """Эмулирует данные для робота (мониторинг)."""
+        self.status = random.choice([0, 1])  # 0 - idle, 1 - working
+        self.coordX = random.randint(0, 100)
+        self.coordY = random.randint(0, 100)
+        self.temperature = random.uniform(20, 30)
+        self.commandNumber = random.randint(1, 10)
+
+        data = {
+            'status': self.status,
+            'coordX': self.coordX,
+            'coordY': self.coordY,
+            'temperature': self.temperature,
+            'commandNumber': self.commandNumber,
+            'name': self.name
+        }
+        return data
+
 
 class MechanicalRobor(Robot):
     def __init__(self, name):
@@ -94,6 +117,23 @@ class MechanicalRobor(Robot):
         self.grab = grab
         logger.info(f"Robot grab set to: {self.grab}")
 
+    def emulate_data(self):
+        """Эмулирует данные для механического робота (мониторинг)."""
+        self.angle = random.randint(0, 360)
+        self.grab = random.choice([0, 1])  # 0 - not grabbing, 1 - grabbing
+
+        data = {
+            'status': self.status, # Inherited
+            'coordX': self.coordX, # Inherited
+            'coordY': self.coordY, # Inherited
+            'temperature': self.temperature, # Inherited
+            'commandNumber': self.commandNumber, # Inherited
+            'angle': self.angle,
+            'grab': self.grab,
+            'name': self.name
+        }
+        return data
+
 
 class VacuumRobor(Robot):
     def __init__(self, name):
@@ -103,6 +143,21 @@ class VacuumRobor(Robot):
     def set_vacuum_capture(self, vacuum_capture):
         self.vacuum_capture = vacuum_capture
         logger.info(f"Robot grab set to: {self.vacuum_capture}")
+
+    def emulate_data(self):
+        """Эмулирует данные для вакуумного робота (мониторинг)."""
+        self.vacuum_capture = random.choice([0, 1])  # 0 - off, 1 - on
+        self.temperature = random.uniform(25,35)
+        data = {
+            'status': self.status,
+            'coordX': self.coordX,
+            'coordY': self.coordY,
+            'temperature': self.temperature, # Inherited
+            'commandNumber': self.commandNumber, # Inherited
+            'vacuum_capture': self.vacuum_capture,
+            'name': self.name
+        }
+        return data
 
 
 class Sensor(Thing):
@@ -123,6 +178,15 @@ class Sensor(Thing):
         self.value = new_value
         logger.info(f"Sensor {self.name} updated to {self.value}")
 
+    def emulate_data(self):
+        """Эмулирует данные для сенсора."""
+        self.value = random.uniform(15, 35) # Emulate temp
+        data = {
+            'value': self.value,
+            'name': self.name
+        }
+        return data
+
 
 class SignalLamp(Thing):
     def __init__(self, name, color="red"):
@@ -141,3 +205,13 @@ class SignalLamp(Thing):
     def change_color(self, new_color):
         self.color = new_color
         logger.info(f"SignalLamp {self.name} changed to {self.color}")
+
+    def emulate_data(self):
+        """Эмулирует данные для сигнальной лампы."""
+        colors = ["red", "green", "yellow"]
+        self.color = random.choice(colors) # Emulate changing color
+        data = {
+            'color': self.color,
+            'name': self.name
+        }
+        return data
