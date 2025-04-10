@@ -10,208 +10,145 @@ logger = logging.getLogger(__name__)
 class Thing(ABC):
     def __init__(self, name):
         self.name = name
+        self.in_system = False
+        logger.info(f"Thing {self.name} initialized")
 
     @abstractmethod
-    def include_in_system(self):
+    def connect(self, command_data):
         pass
 
-    @abstractmethod
-    def get_status(self):
-        pass
 
-    def is_in_system(self):
-        """Проверяет, включена ли вещь в систему."""
-        return self.in_system
+class Sensor(Thing):
+    def __init__(self, name, unit="C"):
+        super().__init__(name)
+        self.unit = unit
+        self.value = 0
+        self.power = "on"
+        logger.info(f"Sensor {self.name} initialized with unit {self.unit}")
+
+    def connect(self, command_data):
+        if 'value' in command_data:
+            old_value = self.value
+            self.value = command_data['value']
+            logger.info(f"Sensor {self.name} value changed from {old_value} to {self.value}")
+        if 'power' in command_data:
+            old_power = self.power
+            self.power = command_data['power']
+            logger.info(f"Sensor {self.name} power changed from {old_power} to {self.power}")
+        return {
+            "status": "success",
+            "power": self.power,
+            "value": self.value,
+            "unit": self.unit
+        }
 
 
 class Robot(Thing):
     def __init__(self, name):
         super().__init__(name)
-        # Параметры для мониторинга (от оборудования)
-        self.lastCommand = 0
         self.status = 0
-        self.count = 0
-        # Параметры для управления (на оборудование)
-        self.coordX = 0
-        self.coordY = 0
-        self.temperature = 0
-        self.commandNumber = 0
-        logger.info(f"Robot initialized: {self.name}")
+        self.coordinates = [0, 0]
+        self.temperature = 25.0
+        self.command_number = 0
+        logger.info(f"Robot {self.name} initialized with coordinates {self.coordinates}")
 
-    def include_in_system(self):
-        logger.info(f"Robot included in system: {self.name}")
+    def connect(self, command_data):
+        if 'status' in command_data:
+            old_status = self.status
+            self.status = command_data['status']
+            logger.info(f"Robot {self.name} status changed from {old_status} to {self.status}")
+        if 'coordinates' in command_data:
+            old_coordinates = self.coordinates
+            self.coordinates = command_data['coordinates']
+            logger.info(f"Robot {self.name} coordinates changed from {old_coordinates} to {self.coordinates}")
+        if 'temperature' in command_data:
+            old_temp = self.temperature
+            self.temperature = command_data['temperature']
+            logger.info(f"Robot {self.name} temperature changed from {old_temp} to {self.temperature}")
+        if 'command_number' in command_data:
+            old_cmd = self.command_number
+            self.command_number = command_data['command_number']
+            logger.info(f"Robot {self.name} command number changed from {old_cmd} to {self.command_number}")
 
-    def get_status(self):
-        logger.info(f"Robot status: {self.status}")
-        return self.status
-
-    def get_coordinates(self):
-        logger.info(f"Robot coordinates: {self.coordX}, {self.coordY}")
-        return self.coordX, self.coordY
-
-    def get_temperature(self):
-        logger.info(f"Robot temperature: {self.temperature}")
-        return self.temperature
-
-    def get_last_command(self):
-        logger.info(f"Robot last command: {self.lastCommand}")
-        return self.lastCommand
-
-    def get_count(self):
-        logger.info(f"Robot count command: {self.count}")
-        return self.count
-
-    def set_status(self, status):
-        self.status = status
-        logger.info(f"Robot status set to: {self.status}")
-
-    def set_temperature(self, temperature):
-        self.temperature = temperature
-        logger.info(f"Robot temperature set to: {self.temperature}")
-
-    def set_commandNumber(self, commandNumber):
-        self.commandNumber = commandNumber
-        logger.info(f"Robot commandNumber set to: {self.commandNumber}")
-
-    def set_coordX(self, coordX):
-        self.coordX = coordX
-        logger.info(f"Robot coordX set to: {self.coordX}")
-
-    def set_coordY(self, coordY):
-        self.coordY = coordY
-        logger.info(f"Robot coordY set to: {self.coordY}")
-
-    def startCommand(self):
-        logger.info(f"Robot start command: {self.commandNumber}")
-
-    def emulate_data(self):
-        """Эмулирует данные для робота (мониторинг)."""
-        self.status = random.choice([0, 1])  # 0 - idle, 1 - working
-        self.coordX = random.randint(0, 100)
-        self.coordY = random.randint(0, 100)
-        self.temperature = random.uniform(20, 30)
-        self.commandNumber = random.randint(1, 10)
-
-        data = {
-            'status': self.status,
-            'coordX': self.coordX,
-            'coordY': self.coordY,
-            'temperature': self.temperature,
-            'commandNumber': self.commandNumber,
-            'name': self.name
+        return {
+            "status": "success",
+            "robot_status": self.status,
+            "coordinates": self.coordinates,
+            "temperature": self.temperature,
+            "command_number": self.command_number
         }
-        return data
 
 
-class MechanicalRobor(Robot):
+class MechanicalRobot(Robot):
     def __init__(self, name):
         super().__init__(name)
         self.angle = 0
         self.grab = 0
+        logger.info(f"MechanicalRobot {self.name} initialized with angle {self.angle} and grab {self.grab}")
 
-    def set_angle(self, angle):
-        self.angle = angle
-        logger.info(f"Robot angle set to: {self.angle}")
+    def connect(self, command_data):
+        super().connect(command_data)
 
-    def set_grab(self, grab):
-        self.grab = grab
-        logger.info(f"Robot grab set to: {self.grab}")
+        if 'angle' in command_data:
+            old_angle = self.angle
+            self.angle = command_data['angle']
+            logger.info(f"MechanicalRobot {self.name} angle changed from {old_angle} to {self.angle}")
+        if 'grab' in command_data:
+            old_grab = self.grab
+            self.grab = command_data['grab']
+            logger.info(f"MechanicalRobot {self.name} grab changed from {old_grab} to {self.grab}")
 
-    def emulate_data(self):
-        """Эмулирует данные для механического робота (мониторинг)."""
-        self.angle = random.randint(0, 360)
-        self.grab = random.choice([0, 1])  # 0 - not grabbing, 1 - grabbing
-
-        data = {
-            'status': self.status, # Inherited
-            'coordX': self.coordX, # Inherited
-            'coordY': self.coordY, # Inherited
-            'temperature': self.temperature, # Inherited
-            'commandNumber': self.commandNumber, # Inherited
-            'angle': self.angle,
-            'grab': self.grab,
-            'name': self.name
+        return {
+            "status": "success",
+            "robot_status": self.status,
+            "coordinates": self.coordinates,
+            "angle": self.angle,
+            "grab": self.grab
         }
-        return data
 
 
-class VacuumRobor(Robot):
+class VacuumRobot(Robot):
     def __init__(self, name):
         super().__init__(name)
         self.vacuum_capture = 0
+        logger.info(f"VacuumRobot {self.name} initialized with vacuum capture {self.vacuum_capture}")
 
-    def set_vacuum_capture(self, vacuum_capture):
-        self.vacuum_capture = vacuum_capture
-        logger.info(f"Robot grab set to: {self.vacuum_capture}")
+        def connect(self, command_data):
+            super().connect(command_data)
 
-    def emulate_data(self):
-        """Эмулирует данные для вакуумного робота (мониторинг)."""
-        self.vacuum_capture = random.choice([0, 1])  # 0 - off, 1 - on
-        self.temperature = random.uniform(25,35)
-        data = {
-            'status': self.status,
-            'coordX': self.coordX,
-            'coordY': self.coordY,
-            'temperature': self.temperature, # Inherited
-            'commandNumber': self.commandNumber, # Inherited
-            'vacuum_capture': self.vacuum_capture,
-            'name': self.name
-        }
-        return data
+            if 'vacuum_capture' in command_data:
+                old_capture = self.vacuum_capture
+                self.vacuum_capture = command_data['vacuum_capture']
+                logger.info(
+                    f"VacuumRobot {self.name} vacuum capture changed from {old_capture} to {self.vacuum_capture}")
 
-
-class Sensor(Thing):
-    def __init__(self, name, value=0):
-        super().__init__(name)
-        self.value = value
-        logger.info(f"Sensor initialized: {self.name}, value: {value}")
-
-    def get_status(self):
-        status = f"Sensor {self.name}: {self.value}"
-        logger.info(status)
-        return status
-
-    def include_in_system(self):
-        logger.info(f"Sensor included in system: {self.name}")
-
-    def update_value(self, new_value):
-        self.value = new_value
-        logger.info(f"Sensor {self.name} updated to {self.value}")
-
-    def emulate_data(self):
-        """Эмулирует данные для сенсора."""
-        self.value = random.uniform(15, 35) # Emulate temp
-        data = {
-            'value': self.value,
-            'name': self.name
-        }
-        return data
+            return {
+                "status": "success",
+                "robot_status": self.status,
+                "vacuum_capture": self.vacuum_capture,
+                "temperature": self.temperature
+            }
 
 
 class SignalLamp(Thing):
     def __init__(self, name, color="red"):
         super().__init__(name)
         self.color = color
-        logger.info(f"SignalLamp initialized: {self.name}, color: {color}")
+        self.power = "on"
+        logger.info(f"SignalLamp {self.name} initialized with color {self.color}")
 
-    def get_status(self):
-        status = f"SignalLamp {self.name} is {self.color}"
-        logger.info(status)
-        return status
+    def connect(self, command_data):
+        if 'color' in command_data:
+            old_color = self.color
+            self.color = command_data['color']
+            logger.info(f"SignalLamp {self.name} color changed from {old_color} to {self.color}")
+        if 'power' in command_data:
+            old_power = self.power
+            self.power = command_data['power']
+            logger.info(f"SignalLamp {self.name} power changed from {old_power} to {self.power}")
 
-    def include_in_system(self):
-        logger.info(f"SignalLamp included in system: {self.name}")
-
-    def change_color(self, new_color):
-        self.color = new_color
-        logger.info(f"SignalLamp {self.name} changed to {self.color}")
-
-    def emulate_data(self):
-        """Эмулирует данные для сигнальной лампы."""
-        colors = ["red", "green", "yellow"]
-        self.color = random.choice(colors) # Emulate changing color
-        data = {
-            'color': self.color,
-            'name': self.name
+        return {
+            "status": "success",
+            "color": self.color,
+            "power": self.power
         }
-        return data
