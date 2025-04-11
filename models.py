@@ -242,3 +242,38 @@ class SignalLamp(Thing):
         except ValueError as e:
             logger.error(f"Validation error in SignalLamp {self.name}: {str(e)}")
             return {"status": "error", "message": str(e)}
+
+
+# === Обогреватель ===
+class Heater(Thing):
+    def __init__(self, name, switch_on_temperature=25.0):
+        super().__init__(name)
+        self.power = "off"
+        self.switch_on_temperature = switch_on_temperature
+        logger.info(f"Heater {self.name} initialized with switch temperature {self.switch_on_temperature}")
+
+    def connect(self, command_data):
+        response = {"status": "success"}
+
+        try:
+            if 'power' in command_data:
+                old_power = self.power
+                self.power = self.validate_string(command_data['power'], 'power', options=['on', 'off'])
+                response['power'] = self.power
+                logger.info(f"Heater {self.name} power changed from {old_power} to {self.power}")
+
+            return response
+
+        except ValueError as e:
+            logger.error(f"Validation error in Heater {self.name}: {str(e)}")
+            return {"status": "error", "message": str(e)}
+
+    def auto_power(self, temperature):
+        """Автоматическое управление питанием на основе температуры"""
+        new_power = "on" if temperature < self.switch_on_temperature else "off"
+        if new_power != self.power:
+            old_power = self.power
+            self.power = new_power
+            logger.info(
+                f"Heater {self.name} automatically changed power from {old_power} to {self.power} based on temperature {temperature}")
+        return self.power
