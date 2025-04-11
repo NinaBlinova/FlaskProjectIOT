@@ -82,6 +82,7 @@ def control_all():
 
         return jsonify({"status": "success", "responses": responses})
 
+
     except Exception as e:
         logger.error(f"Error in /control_all: {str(e)}", exc_info=True)
         return jsonify({"error": str(e)}), 500

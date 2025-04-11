@@ -244,6 +244,7 @@ class SignalLamp(Thing):
             return {"status": "error", "message": str(e)}
 
 
+
 # === Обогреватель ===
 class Heater(Thing):
     def __init__(self, name, switch_on_temperature=25.0):
