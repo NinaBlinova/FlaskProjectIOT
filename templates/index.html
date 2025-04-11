@@ -5,297 +5,480 @@
     <title>Control Panel</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .device { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
-        button { padding: 5px 10px; margin-top: 5px; }
-        input { padding: 5px; margin-right: 5px; }
-        .section { margin-bottom: 10px; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .device {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 5px 10px;
+            margin-top: 5px;
+        }
+
+        input {
+            padding: 5px;
+            margin-right: 5px;
+        }
+
+        .section {
+            margin-bottom: 10px;
+        }
+
+        .error {
+            color: red;
+            margin-top: 5px;
+        }
+
+        .success {
+            color: green;
+            margin-top: 5px;
+        }
+
+        .input-error {
+            border: 1px solid red;
+        }
     </style>
 </head>
 <body>
-    <h1>Управление устройствами</h1>
+<h1>Управление устройствами</h1>
 
-    <div class="device">
-        <h2>Датчик температуры</h2>
-        <div class="section">
-            <input type="number" id="sensorValue" placeholder="Новое значение">
-            <select id="sensorPower">
-                <option value="on">Включен</option>
-                <option value="off">Выключен</option>
-            </select>
-            <button onclick="controlSensor()">Отправить</button>
-        </div>
-        <div id="sensorResponse"></div>
+<div class="device">
+    <h2>Датчик температуры</h2>
+    <div class="section">
+        <input type="number" id="sensorValue" placeholder="Новое значение">
+        <select id="sensorPower">
+            <option value="on">Включен</option>
+            <option value="off">Выключен</option>
+        </select>
+        <button onclick="controlSensor()">Отправить</button>
+        <div id="sensorResponse" class="error"></div>
     </div>
+</div>
 
-    <div class="device">
-        <h2>Сигнальная лампа</h2>
-        <div class="section">
-            Цвет:
-            <select id="lampColor">
-                <option value="red">Красный</option>
-                <option value="green">Зеленый</option>
-                <option value="blue">Синий</option>
-            </select>
-            Статус:
-            <select id="lampPower">
-                <option value="on">Включена</option>
-                <option value="off">Выключена</option>
-            </select>
-            <button onclick="controlLamp()">Отправить</button>
-        </div>
-        <div id="lampResponse"></div>
+<div class="device">
+    <h2>Сигнальная лампа</h2>
+    <div class="section">
+        Цвет: <input type="text" id="lampColor" placeholder="Например: Синий, красный, зелёный">
+        Статус:
+        <select id="lampPower">
+            <option value="on">Включена</option>
+            <option value="off">Выключена</option>
+        </select>
+        <button onclick="controlLamp()">Отправить</button>
+        <div id="lampResponse" class="error"></div>
     </div>
+</div>
 
-    <div class="device">
-        <h2>Основной робот</h2>
-        <div class="section">
-            Статус:
-            <select id="robotStatus">
-                <option value="0">Выключен</option>
-                <option value="1">Включен</option>
-            </select>
-        </div>
-        <div class="section">
-            Координаты X: <input type="number" id="robotX" placeholder="X" style="width: 50px;">
-            Y: <input type="number" id="robotY" placeholder="Y" style="width: 50px;">
-        </div>
-        <div class="section">
-            Температура: <input type="number" step="0.1" id="robotTemp" placeholder="25.0">
-            Команда: <input type="number" id="robotCommand" placeholder="0">
-        </div>
-        <button onclick="controlRobot()">Отправить</button>
-        <div id="robotResponse"></div>
+<div class="device">
+    <h2>Основной робот</h2>
+    <div class="section">
+        Статус:
+        <select id="robotStatus">
+            <option value="0">Выключен</option>
+            <option value="1">Включен</option>
+        </select>
     </div>
-
-    <div class="device">
-        <h2>Механический робот</h2>
-        <div class="section">
-            Угол: <input type="number" id="mechRobotAngle" placeholder="0" min="0" max="360">
-            Захват:
-            <select id="mechRobotGrab">
-                <option value="0">Открыт</option>
-                <option value="1">Закрыт</option>
-            </select>
-        </div>
-        <div class="section">
-            Координаты X: <input type="number" id="mechRobotX" placeholder="X" style="width: 50px;">
-            Y: <input type="number" id="mechRobotY" placeholder="Y" style="width: 50px;">
-        </div>
-        <button onclick="controlMechRobot()">Отправить</button>
-        <div id="mechRobotResponse"></div>
+    <div class="section">
+        Координаты X: <input type="number" id="robotX" placeholder="X" style="width: 50px;">
+        Y: <input type="number" id="robotY" placeholder="Y" style="width: 50px;">
     </div>
-
-    <div class="device">
-        <h2>Вакуумный робот</h2>
-        <div class="section">
-            Вакуумный захват:
-            <select id="vacRobotCapture">
-                <option value="0">Выключен</option>
-                <option value="1">Включен</option>
-            </select>
-        </div>
-        <div class="section">
-            Температура: <input type="number" step="0.1" id="vacRobotTemp" placeholder="25.0">
-        </div>
-        <button onclick="controlVacRobot()">Отправить</button>
-        <div id="vacRobotResponse"></div>
+    <div class="section">
+        Температура: <input type="number" step="0.1" id="robotTemp" placeholder="25.0">
+        Команда: <input type="number" id="robotCommand" placeholder="0">
     </div>
+    <button onclick="controlRobot()">Отправить</button>
+    <div id="robotResponse" class="error"></div>
+</div>
 
-    <div class="device">
-        <h2>Массовое управление</h2>
-        <button onclick="controlAll()">Отправить все команды</button>
-        <div id="allResponse"></div>
+<div class="device">
+    <h2>Механический робот</h2>
+    <div class="section">
+        Угол: <input type="number" id="mechRobotAngle" placeholder="0" min="0" max="360">
+        Захват:
+        <select id="mechRobotGrab">
+            <option value="0">Открыт</option>
+            <option value="1">Закрыт</option>
+        </select>
     </div>
+    <div class="section">
+        Координаты X: <input type="number" id="mechRobotX" placeholder="X" style="width: 50px;">
+        Y: <input type="number" id="mechRobotY" placeholder="Y" style="width: 50px;">
+    </div>
+    <button onclick="controlMechRobot()">Отправить</button>
+    <div id="mechRobotResponse" class="error"></div>
+</div>
 
+<div class="device">
+    <h2>Вакуумный робот</h2>
+    <div class="section">
+        Вакуумный захват:
+        <select id="vacRobotCapture">
+            <option value="0">Выключен</option>
+            <option value="1">Включен</option>
+        </select>
+    </div>
+    <div class="section">
+        Температура: <input type="number" step="0.1" id="vacRobotTemp" placeholder="25.0">
+    </div>
+    <div class="section">
+        Серийный номер: <input type="text" id="vacRobotSerial" placeholder="VAC-1234">
+    </div>
+    <button onclick="controlVacRobot()">Отправить</button>
+    <div id="vacRobotResponse" class="error"></div>
+</div>
 
-    <script>
-        function controlSensor() {
-            const command = {
-                device_type: 'sensor',
-                power: $('#sensorPower').val()
-            };
+<div class="device">
+    <h2>Массовое управление</h2>
+    <button onclick="controlAll()">Отправить все команды</button>
+    <div id="allResponse" class="error"></div>
+</div>
 
-            const sensorValue = parseFloat($('#sensorValue').val());
-            if (!isNaN(sensorValue)) {
-                command.value = sensorValue;
+<script>
+    function clearErrors() {
+        $('.error').text('');
+        $('.success').text('');
+        $('.input-error').removeClass('input-error');
+    }
+
+    function showError(elementId, message) {
+        $(elementId).text(message).removeClass('success').addClass('error');
+    }
+
+    function showSuccess(elementId, message) {
+        $(elementId).text(message).removeClass('error').addClass('success');
+    }
+
+    function markInvalidInput(inputId) {
+        $(inputId).addClass('input-error');
+    }
+
+    function controlSensor() {
+        clearErrors();
+
+        const command = {
+            device_type: 'sensor',
+            power: $('#sensorPower').val()
+        };
+
+        const sensorValue = $('#sensorValue').val();
+        if (sensorValue) {
+            if (isNaN(sensorValue)) {
+                showError('#sensorResponse', 'Ошибка: значение должно быть числом');
+                markInvalidInput('#sensorValue');
+                return;
             }
-
-            $.ajax({
-                url: '/connect',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(command),
-                success: function(response) {
-                    $('#sensorResponse').html(
-                        `Успешно! Статус: ${response.power}, Значение: ${response.value || 'не изменялось'}, Единицы: ${response.unit}`
-                    ).css('color', 'green');
-                },
-                error: function(xhr) {
-                    $('#sensorResponse').html(`Ошибка: ${xhr.responseJSON.error}`).css('color', 'red');
-                }
-            });
+            command.value = parseFloat(sensorValue);
         }
 
-        function controlLamp() {
-            const command = {
-                device_type: 'lamp',
-                color: $('#lampColor').val(),
-                power: $('#lampPower').val()
-            };
-
-            $.ajax({
-                url: '/connect',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(command),
-                success: function(response) {
-                    $('#lampResponse').html(`Успешно! Цвет: ${response.color}, Статус: ${response.power}`).css('color', 'green');
-                },
-                error: function(xhr) {
-                    $('#lampResponse').html(`Ошибка: ${xhr.responseJSON.error}`).css('color', 'red');
+        $.ajax({
+            url: '/connect',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(command),
+            success: function (response) {
+                if (response.status === 'error') {
+                    showError('#sensorResponse', 'Ошибка: ' + response.message);
+                } else {
+                    showSuccess('#sensorResponse',
+                        `Успешно! Статус: ${response.power}, Значение: ${response.value || 'не изменялось'}, Единицы: ${response.unit}`);
                 }
-            });
+            },
+            error: function (xhr) {
+                const errorMsg = xhr.responseJSON && xhr.responseJSON.message
+                    ? xhr.responseJSON.message
+                    : 'Произошла ошибка при отправке данных';
+                showError('#sensorResponse', 'Ошибка: ' + errorMsg);
+            }
+        });
+    }
+
+    function controlLamp() {
+        clearErrors();
+
+        const command = {
+            device_type: 'lamp',
+            color: $('#lampColor').val(),
+            power: $('#lampPower').val()
+        };
+
+        $.ajax({
+            url: '/connect',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(command),
+            success: function (response) {
+                if (response.status === 'error') {
+                    showError('#lampResponse', 'Ошибка: ' + response.message);
+                } else {
+                    showSuccess('#lampResponse', `Успешно! Цвет: ${response.color}, Статус: ${response.power}`);
+                }
+            },
+            error: function (xhr) {
+                const errorMsg = xhr.responseJSON && xhr.responseJSON.message
+                    ? xhr.responseJSON.message
+                    : 'Произошла ошибка при отправке данных';
+                showError('#lampResponse', 'Ошибка: ' + errorMsg);
+            }
+        });
+    }
+
+    function controlRobot() {
+        clearErrors();
+        let hasError = false;
+
+        const command = {
+            device_type: 'robot',
+            status: $('#robotStatus').val()
+        };
+
+        // Проверка координат
+        const coordX = $('#robotX').val();
+        const coordY = $('#robotY').val();
+        if (coordX || coordY) {
+            if (isNaN(coordX) || isNaN(coordY)) {
+                showError('#robotResponse', 'Ошибка: координаты должны быть числами');
+                if (isNaN(coordX)) markInvalidInput('#robotX');
+                if (isNaN(coordY)) markInvalidInput('#robotY');
+                hasError = true;
+            }
+            command.coordinates = [
+                parseInt(coordX) || 0,
+                parseInt(coordY) || 0
+            ];
         }
 
-        function controlRobot() {
-            const command = {
-                device_type: 'robot',
+        // Проверка температуры
+        const temp = $('#robotTemp').val();
+        if (temp) {
+            if (isNaN(temp)) {
+                showError('#robotResponse', 'Ошибка: температура должна быть числом');
+                markInvalidInput('#robotTemp');
+                hasError = true;
+            } else {
+                command.temperature = parseFloat(temp);
+            }
+        }
+
+        // Проверка номера команды
+        const cmdNum = $('#robotCommand').val();
+        if (cmdNum) {
+            if (isNaN(cmdNum)) {
+                showError('#robotResponse', 'Ошибка: номер команды должен быть числом');
+                markInvalidInput('#robotCommand');
+                hasError = true;
+            } else {
+                command.command_number = parseInt(cmdNum);
+            }
+        }
+
+        if (hasError) return;
+
+        $.ajax({
+            url: '/connect',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(command),
+            success: function (response) {
+                if (response.status === 'error') {
+                    showError('#robotResponse', 'Ошибка: ' + response.message);
+                } else {
+                    showSuccess('#robotResponse',
+                        `Успешно! Статус: ${response.robot_status}, Координаты: [${response.coordinates}], ` +
+                        `Температура: ${response.temperature || 'не изменялась'}, Команда: ${response.command_number || 'не изменялась'}`);
+                }
+            },
+            error: function (xhr) {
+                const errorMsg = xhr.responseJSON && xhr.responseJSON.message
+                    ? xhr.responseJSON.message
+                    : 'Произошла ошибка при отправке данных';
+                showError('#robotResponse', 'Ошибка: ' + errorMsg);
+            }
+        });
+    }
+
+    function controlMechRobot() {
+        clearErrors();
+        let hasError = false;
+
+        const command = {
+            device_type: 'mechanical_robot'
+        };
+
+        // Проверка координат
+        const coordX = $('#mechRobotX').val();
+        const coordY = $('#mechRobotY').val();
+        if (coordX || coordY) {
+            if (isNaN(coordX) || isNaN(coordY)) {
+                showError('#mechRobotResponse', 'Ошибка: координаты должны быть числами');
+                if (isNaN(coordX)) markInvalidInput('#mechRobotX');
+                if (isNaN(coordY)) markInvalidInput('#mechRobotY');
+                hasError = true;
+            }
+            command.coordinates = [
+                parseInt(coordX) || 0,
+                parseInt(coordY) || 0
+            ];
+        }
+
+        // Проверка угла
+        const angle = $('#mechRobotAngle').val();
+        if (angle) {
+            if (isNaN(angle)) {
+                showError('#mechRobotResponse', 'Ошибка: угол должен быть числом');
+                markInvalidInput('#mechRobotAngle');
+                hasError = true;
+            } else {
+                command.angle = parseInt(angle);
+            }
+        }
+
+        // Проверка захвата
+        const grab = $('#mechRobotGrab').val();
+        command.grab = parseInt(grab);
+
+        if (hasError) return;
+
+        $.ajax({
+            url: '/connect',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(command),
+            success: function (response) {
+                if (response.status === 'error') {
+                    showError('#mechRobotResponse', 'Ошибка: ' + response.message);
+                } else {
+                    showSuccess('#mechRobotResponse',
+                        `Успешно! Статус: ${response.robot_status}, Угол: ${response.angle}, Захват: ${response.grab}, ` +
+                        `Координаты: [${response.coordinates}]`);
+                }
+            },
+            error: function (xhr) {
+                const errorMsg = xhr.responseJSON && xhr.responseJSON.message
+                    ? xhr.responseJSON.message
+                    : 'Произошла ошибка при отправке данных';
+                showError('#mechRobotResponse', 'Ошибка: ' + errorMsg);
+            }
+        });
+    }
+
+    function controlVacRobot() {
+        clearErrors();
+        let hasError = false;
+
+        const command = {
+            device_type: 'vacuum_robot',
+            vacuum_capture: parseInt($('#vacRobotCapture').val())
+        };
+
+// Проверка температуры
+        const temp = $('#vacRobotTemp').val();
+        if (temp) {
+            if (isNaN(temp)) {
+                showError('#vacRobotResponse', 'Ошибка: температура должна быть числом');
+                markInvalidInput('#vacRobotTemp');
+                hasError = true;
+            } else {
+                command.temperature = parseFloat(temp);
+            }
+        }
+
+// Проверка серийного номера
+        const serial = $('#vacRobotSerial').val();
+        if (serial) {
+            const serialPattern = /^VAC-\d{4}$/;
+            if (!serialPattern.test(serial)) {
+                showError('#vacRobotResponse', 'Ошибка: серийный номер должен быть в формате VAC-1234');
+                markInvalidInput('#vacRobotSerial');
+                hasError = true;
+            } else {
+                command.serial_number = serial;
+            }
+        }
+
+        if (hasError) return;
+
+        $.ajax({
+            url: '/connect',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(command),
+            success: function (response) {
+                if (response.status === 'error') {
+                    showError('#vacRobotResponse', 'Ошибка: ' + response.message);
+                } else {
+                    showSuccess('#vacRobotResponse',
+                        `Успешно!` +
+                        `Вакуумный захват: ${response.vacuum_capture}, ` +
+                        `Температура: ${response.temperature || 'не изменялась'}, ` +
+                        `Серийный номер: ${response.serial_number || 'не изменялся'}`);
+                }
+            },
+            error: function (xhr) {
+                const errorMsg = xhr.responseJSON?.message || 'Произошла ошибка при отправке данных';
+                showError('#vacRobotResponse', 'Ошибка: ' + errorMsg);
+            }
+        });
+    }
+
+    function controlAll() {
+        clearErrors();
+        let hasError = false;
+
+        const commands = {
+            sensor: {
+                value: $('#sensorValue').val() ? parseFloat($('#sensorValue').val()) : undefined,
+                power: $('#sensorPower').val()
+            },
+            robot: {
                 status: parseInt($('#robotStatus').val()),
                 coordinates: [
-                    parseInt($('#robotX').val()) || 0,
-                    parseInt($('#robotY').val()) || 0
-                ]
-            };
-
-            const temp = parseFloat($('#robotTemp').val());
-            if (!isNaN(temp)) {
-                command.temperature = temp;
-            }
-
-            const cmdNum = parseInt($('#robotCommand').val());
-            if (!isNaN(cmdNum)) {
-                command.command_number = cmdNum;
-            }
-
-            $.ajax({
-                url: '/connect',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(command),
-                success: function(response) {
-                    $('#robotResponse').html(
-                        `Успешно! Статус: ${response.robot_status}, Координаты: [${response.coordinates}], ` +
-                        `Температура: ${response.temperature || 'не изменялась'}, Команда: ${response.command_number || 'не изменялась'}`
-                    ).css('color', 'green');
-                },
-                error: function(xhr) {
-                    $('#robotResponse').html(`Ошибка: ${xhr.responseJSON.error}`).css('color', 'red');
-                }
-            });
-        }
-
-        function controlMechRobot() {
-            const command = {
-                device_type: 'mechanical_robot',
-                coordinates: [
-                    parseInt($('#mechRobotX').val()) || 0,
-                    parseInt($('#mechRobotY').val()) || 0
+                    $('#robotX').val() ? parseInt($('#robotX').val()) : 0,
+                    $('#robotY').val() ? parseInt($('#robotY').val()) : 0
                 ],
-                angle: parseInt($('#mechRobotAngle').val()) || 0,
+                temperature: $('#robotTemp').val() ? parseFloat($('#robotTemp').val()) : undefined,
+                command_number: $('#robotCommand').val() ? parseInt($('#robotCommand').val()) : undefined
+            },
+            mechanical_robot: {
+                coordinates: [
+                    $('#mechRobotX').val() ? parseInt($('#mechRobotX').val()) : 0,
+                    $('#mechRobotY').val() ? parseInt($('#mechRobotY').val()) : 0
+                ],
+                angle: $('#mechRobotAngle').val() ? parseInt($('#mechRobotAngle').val()) : undefined,
                 grab: parseInt($('#mechRobotGrab').val())
-            };
-
-
-            $.ajax({
-                url: '/connect',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(command),
-                success: function(response) {
-                    $('#mechRobotResponse').html(
-                        `Успешно! Статус: ${response.robot_status}, Угол: ${response.angle}, Захват: ${response.grab}, ` +
-                        `Координаты: [${response.coordinates}]`
-                    ).css('color', 'green');
-                },
-                error: function(xhr) {
-                    $('#mechRobotResponse').html(`Ошибка: ${xhr.responseJSON.error}`).css('color', 'red');
-                }
-            });
-        }
-
-        function controlVacRobot() {
-            const command = {
-                device_type: 'vacuum_robot',
-                vacuum_capture: parseInt($('#vacRobotCapture').val())
-            };
-
-            const temp = parseFloat($('#vacRobotTemp').val());
-            if (!isNaN(temp)) {
-                command.temperature = temp;
+            },
+            vacuum_robot: {
+                vacuum_capture: parseInt($('#vacRobotCapture').val()),
+                temperature: $('#vacRobotTemp').val() ? parseFloat($('#vacRobotTemp').val()) : undefined,
+                serial_number: $('#vacRobotSerial').val() || undefined
             }
+        };
 
-            $.ajax({
-                url: '/connect',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(command),
-                success: function(response) {
-                    $('#vacRobotResponse').html(
-                        `Успешно! Статус: ${response.robot_status}, Вакуумный захват: ${response.vacuum_capture}, ` +
-                        `Температура: ${response.temperature || 'не изменялась'}`
-                    ).css('color', 'green');
-                },
-                error: function(xhr) {
-                    $('#vacRobotResponse').html(`Ошибка: ${xhr.responseJSON.error}`).css('color', 'red');
-                }
-            });
-        }
-
-        function controlAll() {
-            const commands = {
-                sensor: {
-                    value: parseFloat($('#sensorValue').val()),
-                    power: $('#sensorPower').val()
-                },
-                robot: {
-                    status: parseInt($('#robotStatus').val()),
-                    coordinates: [
-                        parseInt($('#robotX').val()) || 0,
-                        parseInt($('#robotY').val()) || 0
-                    ],
-                    temperature: parseFloat($('#robotTemp').val()) || 25.0,
-                    command_number: parseInt($('#robotCommand').val()) || 0
-                },
-                mechanical_robot: {
-                    coordinates: [
-                        parseInt($('#mechRobotX').val()) || 0,
-                        parseInt($('#mechRobotY').val()) || 0
-                    ],
-                    angle: parseInt($('#mechRobotAngle').val()) || 0,
-                    grab: parseInt($('#mechRobotGrab').val())
-                },
-                vacuum_robot: {
-                    vacuum_capture: parseInt($('#vacRobotCapture').val()),
-                    temperature: parseFloat($('#vacRobotTemp').val()) || 25.0
-                }
-            };
-
-            $.ajax({
-                url: '/control_all',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(commands),
-                success: function(response) {
-                    $('#allResponse').html('Все команды успешно отправлены!').css('color', 'green');
+        $.ajax({
+            url: '/control_all',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(commands),
+            success: function (response) {
+                if (response.status === 'error') {
+                    showError('#allResponse', 'Ошибка: ' + response.message);
+                } else {
+                    showSuccess('#allResponse', 'Все команды успешно отправлены!');
                     console.log(response.responses);
-                },
-                error: function(xhr) {
-                    $('#allResponse').html(`Ошибка: ${xhr.responseJSON.error}`).css('color', 'red');
                 }
-            });
-        }
-    </script>
+            },
+            error: function (xhr) {
+                const errorMsg = xhr.responseJSON?.message || 'Произошла ошибка при отправке данных';
+                showError('#allResponse', 'Ошибка: ' + errorMsg);
+            }
+        });
+    }
+</script>
 </body>
 </html>
-
